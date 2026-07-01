@@ -1,0 +1,9 @@
+*.xlsx
+*.csv
+.venv/
+*.sh
+data/
+logs/
+core/
+mapas/
+*__pycache__
