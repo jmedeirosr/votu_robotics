@@ -109,7 +109,7 @@ class ProcessedCard(Card):
         super().__init__("ProcessedCard", parent)
         self.hover_progress = 0.0
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
-        self.setMinimumHeight(86)
+        self.setMinimumHeight(64)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         self.shadow = QGraphicsDropShadowEffect(self)
@@ -170,11 +170,11 @@ class ProcessedCard(Card):
                 background: {ACCENT_COLOR};
                 color: white;
                 border: 0;
-                border-radius: 16px;
-                min-width: 32px;
-                max-width: 32px;
-                min-height: 32px;
-                max-height: 32px;
+                border-radius: 14px;
+                min-width: 28px;
+                max-width: 28px;
+                min-height: 28px;
+                max-height: 28px;
                 font-family: "Segoe UI";
                 font-size: 14px;
                 font-weight: 700;
@@ -217,6 +217,7 @@ class MapWidget(QWidget):
         self.row_labels = []
         self.cell_positions = {}
         self.active_cell = None
+        self.cell_states = {}
         self.actuator_current_pos = None
         self.actuator_target_pos = None
         self.actuator_previous_pos = None
@@ -254,6 +255,7 @@ class MapWidget(QWidget):
         self.plot_df = plot_df
         self.row_labels = row_labels
         self.active_cell = None
+        self.cell_states = {}
         row_count = len(df.index) if df is not None else 0
         column_count = len(df.columns) if df is not None else 0
         self.setMinimumHeight(max(420, 18 + 36 + (row_count * 48) + 18))
@@ -268,6 +270,7 @@ class MapWidget(QWidget):
         self.row_labels = []
         self.cell_positions = {}
         self.active_cell = None
+        self.cell_states = {}
         self.actuator_current_pos = None
         self.actuator_target_pos = None
         self.actuator_previous_pos = None
@@ -294,6 +297,11 @@ class MapWidget(QWidget):
 
     def hide_tractor(self):
         self.active_cell = None
+        self.update()
+
+    def set_cell_state(self, row_index, column_index, state):
+        """Record the visual transmission state without changing map data."""
+        self.cell_states[(row_index, column_index)] = state
         self.update()
 
     def resizeEvent(self, event):
@@ -375,7 +383,16 @@ class MapWidget(QWidget):
                 painter.setPen(QPen(QColor("#d9e9d4"), 1))
                 painter.drawLine(QPointF(rect.x(), rect.y()), QPointF(rect.x(), rect.y() + rect.height()))
 
-                if self.active_cell == (row_index, col_index):
+                cell_state = self.cell_states.get((row_index, col_index))
+                if cell_state == "processed":
+                    painter.setPen(QPen(QColor("#15803d"), 2))
+                    painter.setBrush(QColor("#bbf7d0"))
+                    painter.drawRoundedRect(rect.adjusted(3, 4, -3, -4), 8, 8)
+                elif cell_state == "error":
+                    painter.setPen(QPen(QColor("#b91c1c"), 2))
+                    painter.setBrush(QColor("#fecaca"))
+                    painter.drawRoundedRect(rect.adjusted(3, 4, -3, -4), 8, 8)
+                elif cell_state == "processing" or self.active_cell == (row_index, col_index):
                     painter.setPen(QPen(QColor(ACCENT_COLOR), 2))
                     painter.setBrush(QColor(FIELD_ACTIVE))
                     painter.drawRoundedRect(rect.adjusted(3, 4, -3, -4), 8, 8)
@@ -738,9 +755,60 @@ class BrandedDialog(QDialog):
         )
 
 
+class ConfirmDiscardDialog(QDialog):
+    def __init__(self, book_name, entry, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Excluir mapa")
+        if ICON_PATH.exists():
+            self.setWindowIcon(QIcon(str(ICON_PATH)))
+        self.setModal(True)
+        self.setFixedWidth(400)
+        self.setObjectName("ConfirmDialog")
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(22, 22, 22, 22)
+        layout.setSpacing(14)
+
+        title = QLabel("Deseja excluir o mapa gerado?")
+        title.setObjectName("ConfirmTitle")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title)
+
+        message = QLabel(f"{book_name} | {entry}\nEsta ação removerá o mapa que está aguardando.")
+        message.setObjectName("ConfirmMessage")
+        message.setWordWrap(True)
+        message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(message)
+
+        actions = QHBoxLayout()
+        cancel_button = QPushButton("Cancelar")
+        cancel_button.setObjectName("ConfirmCancel")
+        cancel_button.clicked.connect(self.reject)
+        delete_button = QPushButton("Excluir mapa")
+        delete_button.setObjectName("ConfirmDelete")
+        delete_button.clicked.connect(self.accept)
+        actions.addWidget(cancel_button)
+        actions.addWidget(delete_button)
+        layout.addLayout(actions)
+
+        self.setStyleSheet(
+            f"""
+            QDialog#ConfirmDialog {{ background: #ffffff; }}
+            QLabel#ConfirmTitle {{ color: {TEXT_COLOR}; font: 600 17px 'Segoe UI'; }}
+            QLabel#ConfirmMessage {{ color: {MUTED_COLOR}; font: 12px 'Segoe UI'; }}
+            QPushButton {{ min-height: 38px; border-radius: 8px; font: 600 12px 'Segoe UI'; }}
+            QPushButton#ConfirmCancel {{ background: #e2e8f0; color: {TEXT_COLOR}; border: 0; }}
+            QPushButton#ConfirmCancel:hover {{ background: #cbd5e1; }}
+            QPushButton#ConfirmDelete {{ background: {RED_COLOR}; color: #ffffff; border: 0; }}
+            QPushButton#ConfirmDelete:hover {{ background: {RED_HOVER}; }}
+            """
+        )
+
+
 class TransmitWorker(QObject):
     step_started = pyqtSignal(int, int)
     step_finished = pyqtSignal(int, int, object)
+    step_failed = pyqtSignal(int, int, str)
     finished = pyqtSignal()
     error = pyqtSignal(str)
 
@@ -753,6 +821,8 @@ class TransmitWorker(QObject):
         self.cancelled = False
 
     def run(self):
+        row_index = -1
+        column_index = -1
         try:
             for row_index, column_index in self.steps[self.start_step:]:
                 
@@ -772,16 +842,22 @@ class TransmitWorker(QObject):
                     return
 
                 status = send_serial(value)
-                
+                if not status:
+                    self.step_failed.emit(row_index, column_index, "Falha ao enviar a entry")
+
                 while not status and not self.cancelled:
                     time.sleep(0.1)
                     status = send_serial(value)
+                    if not status:
+                        self.step_failed.emit(row_index, column_index, "Falha ao reenviar a entry")
                 self.step_finished.emit(row_index, column_index, value)
                 time.sleep(PROCESS_DELAY_SECONDS)
             self.finished.emit()
         
         except Exception as exc:
             logger.error(f"Unexpected error in transmit worker: {exc}")
+            if row_index >= 0 and column_index >= 0:
+                self.step_failed.emit(row_index, column_index, str(exc))
             self.error.emit(str(exc))
 
 
@@ -790,6 +866,9 @@ class App(QMainWindow):
         super().__init__()
         self.paused = False
         self.processed_results = []
+        self.current_processed_item = None
+        self.active_processed_index = None
+        self.active_transmission_title = None
         self.selected_file_path = DEFAULT_TEXT
         self.button_icons = {}
         self.active_view = "map"
@@ -1012,6 +1091,7 @@ class App(QMainWindow):
 
         self.processed_scroll = QScrollArea()
         self.processed_scroll.setWidgetResizable(True)
+        self.processed_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.processed_scroll.setFrameShape(QFrame.Shape.NoFrame)
         self.processed_scroll.setObjectName("TransparentScroll")
         self.processed_cards_widget = QWidget()
@@ -1820,8 +1900,6 @@ class App(QMainWindow):
 
     def upload_file(self):
         try:
-            self.clear_treeview()
-            self.clear_processed_cards()
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
                 "Escolha a planilha",
@@ -1835,6 +1913,7 @@ class App(QMainWindow):
                 self.error("Tipo de arquivo inválido. Por favor, selecione um .xlsx")
                 return None
 
+            self.clear_treeview()
             self.set_file_path(file_path)
             self.populate_booknames_dropdown()
             self.selection_frame.show()
@@ -2137,8 +2216,7 @@ class App(QMainWindow):
         card_index = len(self.processed_results)
         range_matrix = result.attrs.get("range_matrix")
         plot_matrix = result.attrs.get("plot_matrix")
-        self.processed_results.append(
-            {
+        saved = {
                 "book_name": book_name,
                 "entry": entry,
                 "tier": tier,
@@ -2146,35 +2224,44 @@ class App(QMainWindow):
                 "range_matrix": range_matrix.copy() if range_matrix is not None else None,
                 "plot_matrix": plot_matrix.copy() if plot_matrix is not None else None,
                 "details": details.copy(),
+                "status": "waiting",
             }
-        )
+        self.processed_results.append(saved)
+        self.current_processed_item = saved
         self.clear_processed_empty_state()
 
         card = ProcessedCard()
         layout = QHBoxLayout(card)
-        layout.setContentsMargins(12, 12, 10, 12)
-        layout.setSpacing(12)
+        layout.setContentsMargins(8, 8, 7, 8)
+        layout.setSpacing(7)
         icon_label = QLabel()
-        icon_label.setPixmap(self.button_icon("location", ACCENT_COLOR).pixmap(24, 24))
+        icon_label.setPixmap(self.button_icon("location", ACCENT_COLOR).pixmap(19, 19))
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        icon_label.setFixedSize(46, 46)
-        icon_label.setStyleSheet("background: #e8f4ee; border-radius: 14px;")
+        icon_label.setFixedSize(34, 34)
+        icon_label.setStyleSheet("background: #e8f4ee; border-radius: 10px;")
 
         text_layout = QVBoxLayout()
         text_layout.setSpacing(3)
         title = QLabel(str(book_name))
         title.setStyleSheet(
-            f"color: {TEXT_COLOR}; font-family: 'Segoe UI'; font-size: 13px; font-weight: 700;"
+            f"color: {TEXT_COLOR}; font-family: 'Segoe UI'; font-size: 12px; font-weight: 700;"
         )
         title.setWordWrap(True)
         subtitle_text = str(entry)
         if tier is not None:
             subtitle_text = f"{subtitle_text}"
         subtitle = QLabel(subtitle_text)
-        subtitle.setStyleSheet(f"color: {MUTED_COLOR}; font-family: 'Segoe UI'; font-size: 11px;")
+        subtitle.setStyleSheet(f"color: {MUTED_COLOR}; font-family: 'Segoe UI'; font-size: 10px;")
         subtitle.setWordWrap(True)
         text_layout.addWidget(title)
         text_layout.addWidget(subtitle)
+        status_label = QLabel()
+        status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        status_label.setMaximumHeight(18)
+        metadata_layout = QHBoxLayout()
+        metadata_layout.setContentsMargins(0, 0, 0, 0)
+        metadata_layout.setSpacing(4)
+        metadata_layout.addWidget(status_label, 0)
         if tier is not None:
             tier_label = QLabel(f"Tier {tier}")
             tier_label.setStyleSheet(
@@ -2183,22 +2270,109 @@ class App(QMainWindow):
             )
             tier_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             tier_label.setFixedWidth(48)
-            text_layout.addWidget(tier_label)
+            metadata_layout.addWidget(tier_label, 0)
+        metadata_layout.addStretch(1)
+        text_layout.addLayout(metadata_layout)
 
         view_button = QPushButton()
         view_button.setObjectName("ProcessedViewButton")
         view_button.setToolTip("Visualizar mapa processado")
         view_button.setCursor(Qt.CursorShape.PointingHandCursor)
         view_button.setIcon(self.button_icon("view", "#ffffff"))
-        view_button.setIconSize(QSize(16, 16))
-        view_button.clicked.connect(lambda _checked=False, index=card_index: self.inspect_processed_card(index))
+        view_button.setIconSize(QSize(14, 14))
+        view_button.setFixedSize(28, 28)
+        view_button.clicked.connect(
+            lambda _checked=False, item=saved: self.inspect_processed_item(item)
+        )
+
+        delete_button = QPushButton("×")
+        delete_button.setToolTip("Descartar mapa gerado incorretamente")
+        delete_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        delete_button.setFixedSize(26, 26)
+        delete_button.setStyleSheet(
+            "QPushButton { background: #fee2e2; color: #b91c1c; border: none; "
+            "border-radius: 8px; font-size: 18px; font-weight: 700; } "
+            "QPushButton:hover { background: #fecaca; }"
+        )
+        delete_button.clicked.connect(
+            lambda _checked=False, item=saved: self.confirm_discard_waiting_map(item)
+        )
 
         layout.addWidget(icon_label)
         layout.addLayout(text_layout, 1)
+        layout.addWidget(delete_button, 0, Qt.AlignmentFlag.AlignVCenter)
         layout.addWidget(view_button, 0, Qt.AlignmentFlag.AlignVCenter)
         card.setCursor(Qt.CursorShape.PointingHandCursor)
-        card.mousePressEvent = lambda _event, index=card_index: self.inspect_processed_card(index)
+        card.mousePressEvent = lambda _event, item=saved: self.inspect_processed_item(item)
+        saved["card"] = card
+        saved["status_label"] = status_label
+        saved["icon_label"] = icon_label
+        saved["delete_button"] = delete_button
         self.processed_cards_layout.insertWidget(self.processed_cards_layout.count() - 1, card)
+        self.set_processed_status(card_index, "waiting")
+        self.update_processed_count()
+
+    def set_processed_status(self, index, status):
+        if index is None or not (0 <= index < len(self.processed_results)):
+            return
+        saved = self.processed_results[index]
+        saved["status"] = status
+        styles = {
+            "waiting": ("Aguardando", "#475569", "#e2e8f0", "#64748b"),
+            "processing": ("Processando", "#1d4ed8", "#dbeafe", "#2563eb"),
+            "completed": ("Processado", "#166534", "#dcfce7", "#16a34a"),
+            "error": ("Erro", "#991b1b", "#fee2e2", "#dc2626"),
+        }
+        text, foreground, background, icon_color = styles[status]
+        label = saved.get("status_label")
+        if label is not None:
+            label.setText(text)
+            label.setStyleSheet(
+                f"background: {background}; color: {foreground}; border-radius: 8px; "
+                "padding: 1px 5px; font-family: 'Segoe UI'; font-size: 9px; font-weight: 700;"
+            )
+        icon_label = saved.get("icon_label")
+        if icon_label is not None:
+            icon_label.setPixmap(self.button_icon("location", icon_color).pixmap(19, 19))
+            icon_label.setStyleSheet(f"background: {background}; border-radius: 10px;")
+        delete_button = saved.get("delete_button")
+        if delete_button is not None:
+            delete_button.setVisible(status == "waiting")
+        self.update_processed_count()
+
+    def confirm_discard_waiting_map(self, saved):
+        if saved not in self.processed_results or saved.get("status") != "waiting":
+            return
+        dialog = ConfirmDiscardDialog(saved["book_name"], saved["entry"], self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.discard_waiting_map(saved)
+
+    def discard_waiting_map(self, saved):
+        """Discard only drafts that have never been sent to the robot."""
+        if saved not in self.processed_results or saved.get("status") != "waiting":
+            return
+
+        self.processed_results.remove(saved)
+        card = saved.get("card")
+        if card is not None:
+            self.processed_cards_layout.removeWidget(card)
+            card.deleteLater()
+
+        if self.current_processed_item is saved:
+            self.current_processed_item = None
+            self.clear_treeview()
+            self.read_button.hide()
+
+        if not self.processed_results:
+            self.empty_processed_label = QLabel(
+                "Nenhum mapa salvo nesta sessão.\nOs locais processados aparecerão aqui."
+            )
+            self.empty_processed_label.setObjectName("MutedCenter")
+            self.empty_processed_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.processed_cards_layout.insertWidget(0, self.empty_processed_label)
+            self.save_maps_button.hide()
+            self.export_pdf_button.hide()
+
         self.update_processed_count()
 
     def clear_processed_empty_state(self):
@@ -2208,6 +2382,7 @@ class App(QMainWindow):
 
     def clear_processed_cards(self):
         self.processed_results = []
+        self.current_processed_item = None
         while self.processed_cards_layout.count() > 1:
             item = self.processed_cards_layout.takeAt(0)
             widget = item.widget()
@@ -2224,10 +2399,12 @@ class App(QMainWindow):
         self.pause_button.hide()
 
     def update_processed_count(self):
-        self.processed_count_label.setText(str(len(self.processed_results)))
+        completed = sum(item.get("status") == "completed" for item in self.processed_results)
+        self.processed_count_label.setText(f"{completed}/{len(self.processed_results)}")
 
-    def inspect_processed_card(self, index):
-        saved = self.processed_results[index]
+    def inspect_processed_item(self, saved):
+        if saved not in self.processed_results:
+            return
         window = self.create_processed_view_window(saved)
         self.processed_view_windows.append(window)
         window.show()
@@ -2385,8 +2562,30 @@ class App(QMainWindow):
         self.pause_button.setText("Continuar" if self.paused else "Pausar")
         self.pause_button.setIcon(self.button_icon("play" if self.paused else "pause", "#ffffff"))
 
+    def set_transmission_active(self, active):
+        """Protect the active map from UI changes while it is being transmitted."""
+        for widget in (
+            self.upload_button,
+            self.process_button,
+            self.read_button,
+            self.parcels_entry,
+            self.booknames_dropdown,
+            self.entries_dropdown,
+            self.tiers_dropdown,
+            self.start_from_entry,
+        ):
+            widget.setEnabled(not active)
+
+        if active:
+            self.file_status_label.setText("Operação em andamento • não altere a planilha")
+        elif self.get_file_path() != DEFAULT_TEXT:
+            self.file_status_label.setText(Path(self.get_file_path()).name)
+
     def transmit_data(self):
         try:
+            if self.worker_thread is not None and self.worker_thread.isRunning():
+                self.error("Já existe uma operação em andamento.")
+                return
             if self.current_map_df is None:
                 self.error("Nenhum mapa gerado para transmitir.")
                 return
@@ -2415,14 +2614,28 @@ class App(QMainWindow):
                     self.error("Valor inicial não encontrado na matriz.")
                     return
 
+            if self.current_processed_item not in self.processed_results:
+                self.error("O mapa atual não está disponível no histórico.")
+                return
+            self.paused = False
+            self.pause_button.setText("Pausar")
+            self.pause_button.setIcon(self.button_icon("pause", "#ffffff"))
             self.pause_button.show()
             self.prepare_processing_stats()
+            self.active_processed_index = self.processed_results.index(self.current_processed_item)
+            self.active_transmission_title = (
+                self.get_selected_bookname(),
+                self.get_selected_entry(),
+            )
+            self.set_processed_status(self.active_processed_index, "processing")
+            self.set_transmission_active(True)
             self.worker_thread = QThread(self)
             self.worker = TransmitWorker(steps, start_step, values)
             self.worker.moveToThread(self.worker_thread)
             self.worker_thread.started.connect(self.worker.run)
             self.worker.step_started.connect(self.on_transmit_step_started)
             self.worker.step_finished.connect(self.on_transmit_step_finished)
+            self.worker.step_failed.connect(self.on_transmit_step_failed)
             self.worker.finished.connect(self.on_transmit_finished)
             self.worker.error.connect(self.on_transmit_error)
             self.worker.finished.connect(self.worker_thread.quit)
@@ -2432,9 +2645,12 @@ class App(QMainWindow):
             self.worker_thread.start()
         except Exception as exc:
             logger.error(f"Unexpected error in transmit_data: {exc}")
+            self.set_processed_status(self.active_processed_index, "error")
+            self.set_transmission_active(False)
             self.error(f"Erro ao transmitir dados: {exc}")
 
     def on_transmit_step_started(self, row_index, column_index):
+        self.map_canvas.set_cell_state(row_index, column_index, "processing")
         self.map_canvas.show_tractor_at_cell(row_index, column_index)
         rect = self.map_canvas.cell_positions.get((row_index, column_index))
         if rect is not None and hasattr(self, "map_scroll"):
@@ -2445,7 +2661,11 @@ class App(QMainWindow):
             vertical.setValue(max(0, int(rect.center().y() - (viewport.height() / 2))))
 
     def on_transmit_step_finished(self, row_index, column_index, value):
+        self.map_canvas.set_cell_state(row_index, column_index, "processed")
         self.update_processing_stats(row_index, column_index, value)
+
+    def on_transmit_step_failed(self, row_index, column_index, _message):
+        self.map_canvas.set_cell_state(row_index, column_index, "error")
 
     def update_processing_stats(self, row_index, column_index, value):
         try:
@@ -2468,20 +2688,27 @@ class App(QMainWindow):
             logger.error(f"Error updating processing stats: {exc}")
 
     def on_transmit_finished(self):
-        book_name = self.get_selected_bookname()
-        entry = self.get_selected_entry()
+        book_name, entry = self.active_transmission_title or ("-", "-")
+        self.set_processed_status(self.active_processed_index, "completed")
+        self.set_transmission_active(False)
         self.info("Sucesso!", f"Dados transmitidos com sucesso!\n{book_name} | {entry}")
         self.pause_button.hide()
-        self.clear_treeview()
+        self.map_canvas.hide_tractor()
         self.worker = None
         self.worker_thread = None
+        self.active_processed_index = None
+        self.active_transmission_title = None
 
     def on_transmit_error(self, message):
+        self.set_processed_status(self.active_processed_index, "error")
+        self.set_transmission_active(False)
         self.pause_button.hide()
         self.map_canvas.hide_tractor()
         self.error(f"Erro ao transmitir dados: {message}")
         self.worker = None
         self.worker_thread = None
+        self.active_processed_index = None
+        self.active_transmission_title = None
 
     def closeEvent(self, event):
         if self.worker is not None:

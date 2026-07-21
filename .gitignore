@@ -1,5 +1,10 @@
 *.xlsx
 *.csv
+
+
+DIAGNOSTICO_PROCESSAMENTO_SERIAL.md
+
+
 .venv/
 *.sh
 data/
