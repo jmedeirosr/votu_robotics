@@ -1,0 +1,68 @@
+name: Native Raspberry Pi release
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Release channel
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - nightly
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: bullseye-armv7
+            runner: '["self-hosted","Linux","ARMv7","Bullseye"]'
+          - target: bullseye-arm64
+            runner: '["self-hosted","Linux","ARM64","Bullseye"]'
+          - target: bookworm-arm64
+            runner: '["self-hosted","Linux","ARM64","Bookworm"]'
+
+    runs-on: ${{ fromJSON(matrix.runner) }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare locked environment
+        run: |
+          uv sync --extra build --frozen
+
+      - name: Validate toolchain
+        run: |
+          command -v gcc
+          command -v dpkg-deb
+          command -v binarycreator
+          uv run python release.py --dry-run
+
+      - name: Build native release
+        env:
+          RELEASE_BASE_URL: https://downloads.example.invalid/votu-fieldops
+        run: |
+          export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+          uv run python release.py --channel "${{ inputs.channel || 'release' }}"
+
+      - name: Verify checksums
+        run: |
+          cd output
+          sha256sum --check SHA256SUMS
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: votu-fieldops-${{ matrix.target }}
+          path: output/
+          if-no-files-found: error
+          retention-days: 30

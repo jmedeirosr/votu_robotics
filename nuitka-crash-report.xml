@@ -1,0 +1,483 @@
+<?xml version='1.0' encoding='utf8'?>
+<nuitka-compilation-report nuitka_version="2.8.10" nuitka_commercial_version="not installed" mode="standalone" completion="exception">
+  <exception exception_type="OSError" exception_value="[Errno 30] Read-only file system: '/home/labinovacao/.cache/Nuitka'">
+Traceback (most recent call last):
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/MainControl.py", line 1214, in main
+    _main()
+    ~~~~~^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/MainControl.py", line 1033, in _main
+    main_module = _createMainModule()
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/MainControl.py", line 264, in _createMainModule
+    optimizeModules(main_module.getOutputFilename())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/optimizations/Optimization.py", line 332, in optimizeModules
+    finished = makeOptimizationPass()
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/optimizations/Optimization.py", line 288, in makeOptimizationPass
+    changed, micro_passes = optimizeModule(current_module)
+                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/optimizations/Optimization.py", line 166, in optimizeModule
+    return optimizeCompiledPythonModule(module)
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/optimizations/Optimization.py", line 126, in optimizeCompiledPythonModule
+    considerUsedModules(module=module, pass_count=pass_count)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/importing/Recursion.py", line 543, in considerUsedModules
+    new_module = recurseTo(
+        module_name=used_module.module_name,
+    ...&lt;4 lines&gt;...
+        using_module_name=module.module_name,
+    )
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/importing/Recursion.py", line 83, in recurseTo
+    module = _recurseTo(
+        module_name=module_name,
+    ...&lt;2 lines&gt;...
+        reason=reason,
+    )
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/importing/Recursion.py", line 41, in _recurseTo
+    module = Building.buildModule(
+        module_name=module_name,
+    ...&lt;7 lines&gt;...
+        hide_syntax_error=True,
+    )
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/tree/Building.py", line 1449, in buildModule
+    module = _createModule(
+        module_name=module_name,
+    ...&lt;9 lines&gt;...
+        main_added=main_added,
+    )
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/tree/Building.py", line 1133, in _createModule
+    and hasCachedImportedModuleUsageAttempts(
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        module_name=module_name, source_code=source_code, source_ref=source_ref
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/BytecodeCaching.py", line 46, in hasCachedImportedModuleUsageAttempts
+    result = getCachedImportedModuleUsageAttempts(
+        module_name=module_name, source_code=source_code, source_ref=source_ref
+    )
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/BytecodeCaching.py", line 59, in getCachedImportedModuleUsageAttempts
+    cache_filename = _getCacheFilename(cache_name, "json")
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/BytecodeCaching.py", line 30, in _getCacheFilename
+    return os.path.join(getBytecodeCacheDir(), "%s.%s" % (module_name, extension))
+                        ~~~~~~~~~~~~~~~~~~~^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/BytecodeCaching.py", line 26, in getBytecodeCacheDir
+    return getCacheDir("module-cache")
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/utils/AppDirs.py", line 88, in getCacheDir
+    cache_dir = os.path.join(_getCacheDir(), cache_basename)
+                             ~~~~~~~~~~~~^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/utils/AppDirs.py", line 63, in _getCacheDir
+    makePath(_cache_dir)
+    ~~~~~~~~^^^^^^^^^^^^
+  File "/home/labinovacao/Desktop/votu_robotics/.venv/lib/python3.14/site-packages/nuitka/utils/FileOperations.py", line 193, in makePath
+    os.makedirs(path)
+    ~~~~~~~~~~~^^^^^^
+  File "/home/labinovacao/.local/share/uv/python/cpython-3.14.6-linux-aarch64-gnu/lib/python3.14/os.py", line 236, in makedirs
+    mkdir(name, mode)
+    ~~~~~^^^^^^^^^^^^
+OSError: [Errno 30] Read-only file system: '/home/labinovacao/.cache/Nuitka'
+</exception>
+  <module name="__main__" kind="PythonMainModule" usage="root_module" reason="Root module" source_path="${cwd}/src/interface.py">
+    <module_usages>
+      <module_usage name="sys" finding="absolute" line="1" />
+      <module_usage name="time" finding="absolute" line="2" />
+      <module_usage name="pathlib" finding="absolute" line="3" />
+      <module_usage name="pathlib.Path" finding="not-found" line="3" />
+      <module_usage name="pandas" finding="absolute" line="5" />
+      <module_usage name="PyQt6.QtCore" finding="absolute" line="7" />
+      <module_usage name="PyQt6.QtGui" finding="absolute" line="8" />
+      <module_usage name="PyQt6.QtWidgets" finding="absolute" line="9" />
+      <module_usage name="matrix_map" finding="absolute" line="34" />
+      <module_usage name="pdf_report" finding="absolute" line="35" />
+      <module_usage name="serial_commands" finding="absolute" line="36" />
+      <module_usage name="serial_commands" finding="absolute" line="37" />
+      <module_usage name="serial_commands" finding="absolute" line="38" />
+      <module_usage name="serial_commands" finding="absolute" line="39" />
+      <module_usage name="serial_commands" finding="absolute" line="40" />
+      <module_usage name="serial_commands" finding="absolute" line="41" />
+      <module_usage name="serial_commands" finding="absolute" line="42" />
+      <module_usage name="runtime_paths" finding="absolute" line="43" />
+      <module_usage name="qtawesome" finding="absolute" line="47" />
+      <module_usage name="_collections_abc" finding="absolute" line="1" />
+      <module_usage name="_opcode_metadata" finding="absolute" line="1" />
+      <module_usage name="_weakrefset" finding="absolute" line="1" />
+      <module_usage name="abc" finding="absolute" line="1" />
+      <module_usage name="annotationlib" finding="absolute" line="1" />
+      <module_usage name="ast" finding="absolute" line="1" />
+      <module_usage name="codecs" finding="absolute" line="1" />
+      <module_usage name="collections" finding="absolute" line="1" />
+      <module_usage name="copyreg" finding="absolute" line="1" />
+      <module_usage name="dis" finding="absolute" line="1" />
+      <module_usage name="encodings" finding="absolute" line="1" />
+      <module_usage name="encodings._win_cp_codecs" finding="absolute" line="1" />
+      <module_usage name="encodings.aliases" finding="absolute" line="1" />
+      <module_usage name="encodings.ascii" finding="absolute" line="1" />
+      <module_usage name="encodings.big5" finding="absolute" line="1" />
+      <module_usage name="encodings.big5hkscs" finding="absolute" line="1" />
+      <module_usage name="encodings.charmap" finding="absolute" line="1" />
+      <module_usage name="encodings.cp037" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1006" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1026" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1125" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1140" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1250" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1251" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1252" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1253" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1254" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1255" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1256" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1257" finding="absolute" line="1" />
+      <module_usage name="encodings.cp1258" finding="absolute" line="1" />
+      <module_usage name="encodings.cp273" finding="absolute" line="1" />
+      <module_usage name="encodings.cp424" finding="absolute" line="1" />
+      <module_usage name="encodings.cp437" finding="absolute" line="1" />
+      <module_usage name="encodings.cp500" finding="absolute" line="1" />
+      <module_usage name="encodings.cp720" finding="absolute" line="1" />
+      <module_usage name="encodings.cp737" finding="absolute" line="1" />
+      <module_usage name="encodings.cp775" finding="absolute" line="1" />
+      <module_usage name="encodings.cp850" finding="absolute" line="1" />
+      <module_usage name="encodings.cp852" finding="absolute" line="1" />
+      <module_usage name="encodings.cp855" finding="absolute" line="1" />
+      <module_usage name="encodings.cp856" finding="absolute" line="1" />
+      <module_usage name="encodings.cp857" finding="absolute" line="1" />
+      <module_usage name="encodings.cp858" finding="absolute" line="1" />
+      <module_usage name="encodings.cp860" finding="absolute" line="1" />
+      <module_usage name="encodings.cp861" finding="absolute" line="1" />
+      <module_usage name="encodings.cp862" finding="absolute" line="1" />
+      <module_usage name="encodings.cp863" finding="absolute" line="1" />
+      <module_usage name="encodings.cp864" finding="absolute" line="1" />
+      <module_usage name="encodings.cp865" finding="absolute" line="1" />
+      <module_usage name="encodings.cp866" finding="absolute" line="1" />
+      <module_usage name="encodings.cp869" finding="absolute" line="1" />
+      <module_usage name="encodings.cp874" finding="absolute" line="1" />
+      <module_usage name="encodings.cp875" finding="absolute" line="1" />
+      <module_usage name="encodings.cp932" finding="absolute" line="1" />
+      <module_usage name="encodings.cp949" finding="absolute" line="1" />
+      <module_usage name="encodings.cp950" finding="absolute" line="1" />
+      <module_usage name="encodings.euc_jis_2004" finding="absolute" line="1" />
+      <module_usage name="encodings.euc_jisx0213" finding="absolute" line="1" />
+      <module_usage name="encodings.euc_jp" finding="absolute" line="1" />
+      <module_usage name="encodings.euc_kr" finding="absolute" line="1" />
+      <module_usage name="encodings.gb18030" finding="absolute" line="1" />
+      <module_usage name="encodings.gb2312" finding="absolute" line="1" />
+      <module_usage name="encodings.gbk" finding="absolute" line="1" />
+      <module_usage name="encodings.hp_roman8" finding="absolute" line="1" />
+      <module_usage name="encodings.hz" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_jp" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_jp_1" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_jp_2" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_jp_2004" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_jp_3" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_jp_ext" finding="absolute" line="1" />
+      <module_usage name="encodings.iso2022_kr" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_1" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_10" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_11" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_13" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_14" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_15" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_16" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_2" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_3" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_4" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_5" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_6" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_7" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_8" finding="absolute" line="1" />
+      <module_usage name="encodings.iso8859_9" finding="absolute" line="1" />
+      <module_usage name="encodings.johab" finding="absolute" line="1" />
+      <module_usage name="encodings.koi8_r" finding="absolute" line="1" />
+      <module_usage name="encodings.koi8_t" finding="absolute" line="1" />
+      <module_usage name="encodings.koi8_u" finding="absolute" line="1" />
+      <module_usage name="encodings.kz1048" finding="absolute" line="1" />
+      <module_usage name="encodings.latin_1" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_arabic" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_croatian" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_cyrillic" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_farsi" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_greek" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_iceland" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_latin2" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_roman" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_romanian" finding="absolute" line="1" />
+      <module_usage name="encodings.mac_turkish" finding="absolute" line="1" />
+      <module_usage name="encodings.palmos" finding="absolute" line="1" />
+      <module_usage name="encodings.ptcp154" finding="absolute" line="1" />
+      <module_usage name="encodings.quopri_codec" finding="absolute" line="1" />
+      <module_usage name="encodings.raw_unicode_escape" finding="absolute" line="1" />
+      <module_usage name="encodings.shift_jis" finding="absolute" line="1" />
+      <module_usage name="encodings.shift_jis_2004" finding="absolute" line="1" />
+      <module_usage name="encodings.shift_jisx0213" finding="absolute" line="1" />
+      <module_usage name="encodings.tis_620" finding="absolute" line="1" />
+      <module_usage name="encodings.undefined" finding="absolute" line="1" />
+      <module_usage name="encodings.unicode_escape" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_16" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_16_be" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_16_le" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_32" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_32_be" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_32_le" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_7" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_8" finding="absolute" line="1" />
+      <module_usage name="encodings.utf_8_sig" finding="absolute" line="1" />
+      <module_usage name="encodings.uu_codec" finding="absolute" line="1" />
+      <module_usage name="encodings.zlib_codec" finding="absolute" line="1" />
+      <module_usage name="enum" finding="absolute" line="1" />
+      <module_usage name="functools" finding="absolute" line="1" />
+      <module_usage name="genericpath" finding="absolute" line="1" />
+      <module_usage name="importlib" finding="absolute" line="1" />
+      <module_usage name="importlib._bootstrap" finding="absolute" line="1" />
+      <module_usage name="importlib._bootstrap_external" finding="absolute" line="1" />
+      <module_usage name="importlib.machinery" finding="absolute" line="1" />
+      <module_usage name="inspect" finding="absolute" line="1" />
+      <module_usage name="io" finding="absolute" line="1" />
+      <module_usage name="keyword" finding="absolute" line="1" />
+      <module_usage name="linecache" finding="absolute" line="1" />
+      <module_usage name="locale" finding="absolute" line="1" />
+      <module_usage name="opcode" finding="absolute" line="1" />
+      <module_usage name="operator" finding="absolute" line="1" />
+      <module_usage name="os" finding="absolute" line="1" />
+      <module_usage name="posixpath" finding="absolute" line="1" />
+      <module_usage name="quopri" finding="absolute" line="1" />
+      <module_usage name="re" finding="absolute" line="1" />
+      <module_usage name="re._casefix" finding="absolute" line="1" />
+      <module_usage name="re._compiler" finding="absolute" line="1" />
+      <module_usage name="re._constants" finding="absolute" line="1" />
+      <module_usage name="re._parser" finding="absolute" line="1" />
+      <module_usage name="reprlib" finding="absolute" line="1" />
+      <module_usage name="stat" finding="absolute" line="1" />
+      <module_usage name="token" finding="absolute" line="1" />
+      <module_usage name="tokenize" finding="absolute" line="1" />
+      <module_usage name="types" finding="absolute" line="1" />
+      <module_usage name="weakref" finding="absolute" line="1" />
+      <module_usage name="zipimport" finding="absolute" line="1" />
+      <module_usage name="__future__" finding="absolute" line="1" />
+      <module_usage name="__hello__" finding="absolute" line="1" />
+      <module_usage name="__phello__" finding="absolute" line="1" />
+      <module_usage name="__phello__.spam" finding="absolute" line="1" />
+      <module_usage name="_aix_support" finding="absolute" line="1" />
+      <module_usage name="_android_support" finding="absolute" line="1" />
+      <module_usage name="_apple_support" finding="absolute" line="1" />
+      <module_usage name="_ast_unparse" finding="absolute" line="1" />
+      <module_usage name="_colorize" finding="absolute" line="1" />
+      <module_usage name="_compat_pickle" finding="absolute" line="1" />
+      <module_usage name="_markupbase" finding="absolute" line="1" />
+      <module_usage name="_osx_support" finding="absolute" line="1" />
+      <module_usage name="_py_abc" finding="absolute" line="1" />
+      <module_usage name="_py_warnings" finding="absolute" line="1" />
+      <module_usage name="_pyio" finding="absolute" line="1" />
+      <module_usage name="_pylong" finding="absolute" line="1" />
+      <module_usage name="_pyrepl" finding="absolute" line="1" />
+      <module_usage name="_pyrepl._module_completer" finding="absolute" line="1" />
+      <module_usage name="_pyrepl._threading_handler" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.base_eventqueue" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.commands" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.completing_reader" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.console" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.fancy_termios" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.historical_reader" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.input" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.keymap" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.main" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.pager" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.reader" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.readline" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.simple_interact" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.terminfo" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.trace" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.types" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.unix_console" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.unix_eventqueue" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.utils" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.windows_console" finding="absolute" line="1" />
+      <module_usage name="_pyrepl.windows_eventqueue" finding="absolute" line="1" />
+      <module_usage name="_sitebuiltins" finding="absolute" line="1" />
+      <module_usage name="_strptime" finding="absolute" line="1" />
+      <module_usage name="_sysconfigdata__linux_aarch64-linux-gnu" finding="absolute" line="1" />
+      <module_usage name="_threading_local" finding="absolute" line="1" />
+      <module_usage name="base64" finding="absolute" line="1" />
+      <module_usage name="bisect" finding="absolute" line="1" />
+      <module_usage name="calendar" finding="absolute" line="1" />
+      <module_usage name="cmd" finding="absolute" line="1" />
+      <module_usage name="code" finding="absolute" line="1" />
+      <module_usage name="codeop" finding="absolute" line="1" />
+      <module_usage name="colorsys" finding="absolute" line="1" />
+      <module_usage name="compression" finding="absolute" line="1" />
+      <module_usage name="compression._common" finding="absolute" line="1" />
+      <module_usage name="compression._common._streams" finding="absolute" line="1" />
+      <module_usage name="compression.bz2" finding="absolute" line="1" />
+      <module_usage name="compression.gzip" finding="absolute" line="1" />
+      <module_usage name="compression.lzma" finding="absolute" line="1" />
+      <module_usage name="compression.zlib" finding="absolute" line="1" />
+      <module_usage name="compression.zstd" finding="absolute" line="1" />
+      <module_usage name="compression.zstd._zstdfile" finding="absolute" line="1" />
+      <module_usage name="configparser" finding="absolute" line="1" />
+      <module_usage name="contextlib" finding="absolute" line="1" />
+      <module_usage name="contextvars" finding="absolute" line="1" />
+      <module_usage name="copy" finding="absolute" line="1" />
+      <module_usage name="dataclasses" finding="absolute" line="1" />
+      <module_usage name="datetime" finding="absolute" line="1" />
+      <module_usage name="difflib" finding="absolute" line="1" />
+      <module_usage name="encodings.base64_codec" finding="absolute" line="1" />
+      <module_usage name="encodings.bz2_codec" finding="absolute" line="1" />
+      <module_usage name="encodings.hex_codec" finding="absolute" line="1" />
+      <module_usage name="encodings.idna" finding="absolute" line="1" />
+      <module_usage name="encodings.punycode" finding="absolute" line="1" />
+      <module_usage name="encodings.rot_13" finding="absolute" line="1" />
+      <module_usage name="filecmp" finding="absolute" line="1" />
+      <module_usage name="fileinput" finding="absolute" line="1" />
+      <module_usage name="fnmatch" finding="absolute" line="1" />
+      <module_usage name="ftplib" finding="absolute" line="1" />
+      <module_usage name="getopt" finding="absolute" line="1" />
+      <module_usage name="gettext" finding="absolute" line="1" />
+      <module_usage name="glob" finding="absolute" line="1" />
+      <module_usage name="graphlib" finding="absolute" line="1" />
+      <module_usage name="gzip" finding="absolute" line="1" />
+      <module_usage name="heapq" finding="absolute" line="1" />
+      <module_usage name="html" finding="absolute" line="1" />
+      <module_usage name="html.entities" finding="absolute" line="1" />
+      <module_usage name="html.parser" finding="absolute" line="1" />
+      <module_usage name="imaplib" finding="absolute" line="1" />
+      <module_usage name="importlib._abc" finding="absolute" line="1" />
+      <module_usage name="importlib.abc" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata._adapters" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata._collections" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata._functools" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata._itertools" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata._meta" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata._text" finding="absolute" line="1" />
+      <module_usage name="importlib.metadata.diagnose" finding="absolute" line="1" />
+      <module_usage name="importlib.readers" finding="absolute" line="1" />
+      <module_usage name="importlib.resources" finding="absolute" line="1" />
+      <module_usage name="importlib.resources._adapters" finding="absolute" line="1" />
+      <module_usage name="importlib.resources._common" finding="absolute" line="1" />
+      <module_usage name="importlib.resources._functional" finding="absolute" line="1" />
+      <module_usage name="importlib.resources._itertools" finding="absolute" line="1" />
+      <module_usage name="importlib.resources.abc" finding="absolute" line="1" />
+      <module_usage name="importlib.resources.readers" finding="absolute" line="1" />
+      <module_usage name="importlib.resources.simple" finding="absolute" line="1" />
+      <module_usage name="importlib.simple" finding="absolute" line="1" />
+      <module_usage name="importlib.util" finding="absolute" line="1" />
+      <module_usage name="ipaddress" finding="absolute" line="1" />
+      <module_usage name="json" finding="absolute" line="1" />
+      <module_usage name="json.decoder" finding="absolute" line="1" />
+      <module_usage name="json.encoder" finding="absolute" line="1" />
+      <module_usage name="json.scanner" finding="absolute" line="1" />
+      <module_usage name="mimetypes" finding="absolute" line="1" />
+      <module_usage name="modulefinder" finding="absolute" line="1" />
+      <module_usage name="netrc" finding="absolute" line="1" />
+      <module_usage name="nturl2path" finding="absolute" line="1" />
+      <module_usage name="numbers" finding="absolute" line="1" />
+      <module_usage name="pathlib" finding="absolute" line="1" />
+      <module_usage name="pathlib._local" finding="absolute" line="1" />
+      <module_usage name="pathlib._os" finding="absolute" line="1" />
+      <module_usage name="pathlib.types" finding="absolute" line="1" />
+      <module_usage name="pickle" finding="absolute" line="1" />
+      <module_usage name="pickletools" finding="absolute" line="1" />
+      <module_usage name="pkgutil" finding="absolute" line="1" />
+      <module_usage name="platform" finding="absolute" line="1" />
+      <module_usage name="poplib" finding="absolute" line="1" />
+      <module_usage name="pprint" finding="absolute" line="1" />
+      <module_usage name="pstats" finding="absolute" line="1" />
+      <module_usage name="pyclbr" finding="absolute" line="1" />
+      <module_usage name="rlcompleter" finding="absolute" line="1" />
+      <module_usage name="sched" finding="absolute" line="1" />
+      <module_usage name="shlex" finding="absolute" line="1" />
+      <module_usage name="shutil" finding="absolute" line="1" />
+      <module_usage name="signal" finding="absolute" line="1" />
+      <module_usage name="socketserver" finding="absolute" line="1" />
+      <module_usage name="sre_compile" finding="absolute" line="1" />
+      <module_usage name="sre_constants" finding="absolute" line="1" />
+      <module_usage name="sre_parse" finding="absolute" line="1" />
+      <module_usage name="string" finding="absolute" line="1" />
+      <module_usage name="string.templatelib" finding="absolute" line="1" />
+      <module_usage name="stringprep" finding="absolute" line="1" />
+      <module_usage name="struct" finding="absolute" line="1" />
+      <module_usage name="symtable" finding="absolute" line="1" />
+      <module_usage name="sysconfig" finding="absolute" line="1" />
+      <module_usage name="tarfile" finding="absolute" line="1" />
+      <module_usage name="threading" finding="absolute" line="1" />
+      <module_usage name="timeit" finding="absolute" line="1" />
+      <module_usage name="tomllib" finding="absolute" line="1" />
+      <module_usage name="tomllib._parser" finding="absolute" line="1" />
+      <module_usage name="tomllib._re" finding="absolute" line="1" />
+      <module_usage name="tomllib._types" finding="absolute" line="1" />
+      <module_usage name="trace" finding="absolute" line="1" />
+      <module_usage name="traceback" finding="absolute" line="1" />
+      <module_usage name="tracemalloc" finding="absolute" line="1" />
+      <module_usage name="typing" finding="absolute" line="1" />
+      <module_usage name="warnings" finding="absolute" line="1" />
+      <module_usage name="webbrowser" finding="absolute" line="1" />
+      <module_usage name="zipfile" finding="absolute" line="1" />
+      <module_usage name="zipfile._path" finding="absolute" line="1" />
+      <module_usage name="zipfile._path.glob" finding="absolute" line="1" />
+    </module_usages>
+  </module>
+  <performance>
+    <memory_usage name="after_launch" value="72683520" />
+  </performance>
+  <data_file name="assets/analytics.png" source="${cwd}/assets/analytics.png" size="581" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/chevron-down.png" source="${cwd}/assets/chevron-down.png" size="267" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/entry.png" source="${cwd}/assets/entry.png" size="468" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/location.png" source="${cwd}/assets/location.png" size="519" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/logo-icon.ico" source="${cwd}/assets/logo-icon.ico" size="31169" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/logo-long.png" source="${cwd}/assets/logo-long.png" size="34727" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/map.png" source="${cwd}/assets/map.png" size="531" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/parcels.png" source="${cwd}/assets/parcels.png" size="582" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/pause.png" source="${cwd}/assets/pause.png" size="292" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/play.png" source="${cwd}/assets/play.png" size="360" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/save.png" source="${cwd}/assets/save.png" size="525" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/send.png" source="${cwd}/assets/send.png" size="446" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/start.png" source="${cwd}/assets/start.png" size="562" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/tier.png" source="${cwd}/assets/tier.png" size="589" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/tractor.gif" source="${cwd}/assets/tractor.gif" size="1035" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/upload.png" source="${cwd}/assets/upload.png" size="469" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_file name="assets/view.png" source="${cwd}/assets/view.png" size="557" reason="specified data dir '/home/labinovacao/Desktop/votu_robotics/assets' on command line" tags="user,copy,data-dir-contents" />
+  <data_composer blob_size="None" />
+  <command_line>
+    <option value="--standalone" />
+    <option value="--enable-plugin=pyqt6" />
+    <option value="--assume-yes-for-downloads" />
+    <option value="--output-dir=/home/labinovacao/Desktop/votu_robotics/build/nuitka" />
+    <option value="--output-filename=votu-fieldops" />
+    <option value="--include-data-dir=/home/labinovacao/Desktop/votu_robotics/assets=assets" />
+    <option value="--nofollow-import-to=tkinter,IPython" />
+    <option value="--python-flag=no_docstrings" />
+    <option value="--lto=yes" />
+    <option value="/home/labinovacao/Desktop/votu_robotics/src/interface.py" />
+  </command_line>
+  <plugins>
+    <plugin name="anti-bloat" user_enabled="no" />
+    <plugin name="data-files" user_enabled="no" />
+    <plugin name="delvewheel" user_enabled="no" />
+    <plugin name="dll-files" user_enabled="no" />
+    <plugin name="eventlet" user_enabled="no" />
+    <plugin name="gevent" user_enabled="no" />
+    <plugin name="gi" user_enabled="no" />
+    <plugin name="glfw" user_enabled="no" />
+    <plugin name="implicit-imports" user_enabled="no" />
+    <plugin name="kivy" user_enabled="no" />
+    <plugin name="matplotlib" user_enabled="no" />
+    <plugin name="multiprocessing" user_enabled="no" />
+    <plugin name="options-nanny" user_enabled="no" />
+    <plugin name="pbr-compat" user_enabled="no" />
+    <plugin name="pkg-resources" user_enabled="no" />
+    <plugin name="playwright" user_enabled="no" />
+    <plugin name="pyqt6" user_enabled="yes" />
+    <plugin name="pywebview" user_enabled="no" />
+    <plugin name="spacy" user_enabled="no" />
+    <plugin name="transformers" user_enabled="no" />
+  </plugins>
+  <distributions />
+  <python python_exe="${sys.prefix}/bin/python" python_flavor="Python Build Standalone" python_version="3.14.6" os_name="Linux" os_release="Debian-11" arch_name="aarch64" filesystem_encoding="utf-8" gil="yes">
+    <search_path>
+      <path value="${cwd}" />
+      <path value="${cwd}/src" />
+      <path value="${sys.real_prefix}/lib/python3.14" />
+      <path value="${sys.real_prefix}/lib/python3.14/lib-dynload" />
+      <path value="${sys.prefix}/lib/python3.14/site-packages" />
+    </search_path>
+  </python>
+  <output run_filename="${cwd}/build/nuitka/interface.dist/votu-fieldops" />
+</nuitka-compilation-report>

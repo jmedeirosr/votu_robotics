@@ -40,6 +40,7 @@ from serial_commands import logger
 from serial_commands import read_data_from_excel
 from serial_commands import send_serial
 from serial_commands import tiers_list
+from runtime_paths import resource_path, user_data_path
 
 
 try:
@@ -82,10 +83,9 @@ CHART_TEAL = "#0f9f8f"
 CHART_AMBER = "#f59e0b"
 CHART_PURPLE = "#7c3aed"
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-ASSETS_PATH = PROJECT_ROOT / "assets"
+ASSETS_PATH = resource_path("assets")
 
-MAP_EXPORTS_PATH = PROJECT_ROOT /"mapas"
+MAP_EXPORTS_PATH = user_data_path() / "mapas"
 
 LOGO_PATH = ASSETS_PATH / "logo-long.png"
 ICON_PATH = ASSETS_PATH / "logo-icon.ico"
@@ -109,7 +109,7 @@ class ProcessedCard(Card):
         super().__init__("ProcessedCard", parent)
         self.hover_progress = 0.0
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
-        self.setMinimumHeight(64)
+        self.setMinimumHeight(88)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         self.shadow = QGraphicsDropShadowEffect(self)
@@ -879,6 +879,7 @@ class App(QMainWindow):
         self.processing_stats = self.empty_processing_stats()
         self.worker_thread = None
         self.worker = None
+        self.transmission_result = None
         self.bi_window = None
         self.processed_view_windows = []
 
@@ -2257,7 +2258,8 @@ class App(QMainWindow):
         text_layout.addWidget(subtitle)
         status_label = QLabel()
         status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        status_label.setMaximumHeight(18)
+        status_label.setMinimumHeight(22)
+        status_label.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         metadata_layout = QHBoxLayout()
         metadata_layout.setContentsMargins(0, 0, 0, 0)
         metadata_layout.setSpacing(4)
@@ -2265,11 +2267,13 @@ class App(QMainWindow):
         if tier is not None:
             tier_label = QLabel(f"Tier {tier}")
             tier_label.setStyleSheet(
-                "background: #fef3c7; color: #92400e; border-radius: 8px; padding: 2px 6px; "
+                "background: #fef3c7; color: #92400e; border-radius: 9px; padding: 2px 7px; "
                 "font-family: 'Segoe UI'; font-size: 10px; font-weight: 700;"
             )
             tier_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            tier_label.setFixedWidth(48)
+            tier_label.setMinimumHeight(22)
+            tier_label.setMinimumWidth(48)
+            tier_label.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
             metadata_layout.addWidget(tier_label, 0)
         metadata_layout.addStretch(1)
         text_layout.addLayout(metadata_layout)
@@ -2328,8 +2332,8 @@ class App(QMainWindow):
         if label is not None:
             label.setText(text)
             label.setStyleSheet(
-                f"background: {background}; color: {foreground}; border-radius: 8px; "
-                "padding: 1px 5px; font-family: 'Segoe UI'; font-size: 9px; font-weight: 700;"
+                f"background: {background}; color: {foreground}; border-radius: 9px; "
+                "padding: 2px 7px; font-family: 'Segoe UI'; font-size: 9px; font-weight: 700;"
             )
         icon_label = saved.get("icon_label")
         if icon_label is not None:
@@ -2460,7 +2464,22 @@ class App(QMainWindow):
             counter += 1
         return path
 
+    def block_export_during_transmission(self):
+        operation_in_progress = any(
+            saved.get("status") == "processing"
+            for saved in self.processed_results
+        )
+        if not operation_in_progress:
+            return False
+        self.info(
+            "Operação em andamento",
+            "Por favor, aguarde até que a contagem deste ensaio seja finalizada.",
+        )
+        return True
+
     def export_processed_reports(self):
+        if self.block_export_during_transmission():
+            return
         if not self.processed_results:
             self.error("Nenhum mapa processado para exportar.")
             return
@@ -2497,6 +2516,8 @@ class App(QMainWindow):
 
     def save_processed_maps(self):
         try:
+            if self.block_export_during_transmission():
+                return
             if not self.processed_results:
                 self.error("Nenhum mapa processado para salvar.")
                 return
@@ -2627,6 +2648,7 @@ class App(QMainWindow):
                 self.get_selected_bookname(),
                 self.get_selected_entry(),
             )
+            self.transmission_result = None
             self.set_processed_status(self.active_processed_index, "processing")
             self.set_transmission_active(True)
             self.worker_thread = QThread(self)
@@ -2640,7 +2662,9 @@ class App(QMainWindow):
             self.worker.error.connect(self.on_transmit_error)
             self.worker.finished.connect(self.worker_thread.quit)
             self.worker.error.connect(self.worker_thread.quit)
-            self.worker_thread.finished.connect(self.worker.deleteLater)
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.worker.error.connect(self.worker.deleteLater)
+            self.worker_thread.finished.connect(self.on_transmit_thread_finished)
             self.worker_thread.finished.connect(self.worker_thread.deleteLater)
             self.worker_thread.start()
         except Exception as exc:
@@ -2688,27 +2712,35 @@ class App(QMainWindow):
             logger.error(f"Error updating processing stats: {exc}")
 
     def on_transmit_finished(self):
+        # The worker has finished, but QThread may still be running while its
+        # event loop shuts down. Keep both Python wrappers alive until the
+        # thread's own ``finished`` signal is delivered.
+        self.transmission_result = ("completed", None)
+
+    def on_transmit_error(self, message):
+        self.transmission_result = ("error", message)
+
+    def on_transmit_thread_finished(self):
+        result, message = self.transmission_result or (
+            "error",
+            "A operação foi encerrada inesperadamente.",
+        )
         book_name, entry = self.active_transmission_title or ("-", "-")
-        self.set_processed_status(self.active_processed_index, "completed")
+
+        self.set_processed_status(self.active_processed_index, result)
         self.set_transmission_active(False)
-        self.info("Sucesso!", f"Dados transmitidos com sucesso!\n{book_name} | {entry}")
         self.pause_button.hide()
         self.map_canvas.hide_tractor()
         self.worker = None
         self.worker_thread = None
+        self.transmission_result = None
         self.active_processed_index = None
         self.active_transmission_title = None
 
-    def on_transmit_error(self, message):
-        self.set_processed_status(self.active_processed_index, "error")
-        self.set_transmission_active(False)
-        self.pause_button.hide()
-        self.map_canvas.hide_tractor()
-        self.error(f"Erro ao transmitir dados: {message}")
-        self.worker = None
-        self.worker_thread = None
-        self.active_processed_index = None
-        self.active_transmission_title = None
+        if result == "completed":
+            self.info("Sucesso!", f"Dados transmitidos com sucesso!\n{book_name} | {entry}")
+        else:
+            self.error(f"Erro ao transmitir dados: {message}")
 
     def closeEvent(self, event):
         if self.worker is not None:

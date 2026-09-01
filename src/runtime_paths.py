@@ -1,4 +1,4 @@
-"""Paths that work both from source and from a PyInstaller bundle."""
+"""Paths that work both from source and from a Nuitka standalone bundle."""
 
 from __future__ import annotations
 
@@ -6,13 +6,14 @@ import os
 import sys
 from pathlib import Path
 
-
-APP_ID = "votu-fieldops"
+from version import APP_ID
 
 
 def resource_path(relative_path: str) -> Path:
     """Return a bundled read-only resource path."""
-    bundle_root = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+    bundle_root = Path(__file__).resolve().parent.parent
+    if "__compiled__" in globals():
+        bundle_root = Path(sys.argv[0]).resolve().parent
     return bundle_root / relative_path
 
 

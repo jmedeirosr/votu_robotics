@@ -7,8 +7,11 @@ DIAGNOSTICO_PROCESSAMENTO_SERIAL.md
 
 .venv/
 *.sh
+!configure_raspberry.sh
 data/
 logs/
 core/
 mapas/
 *__pycache__
+build/
+output/

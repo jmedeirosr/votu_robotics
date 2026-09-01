@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Votu FieldOps</Name>
+    <Version>@VERSION@</Version>
+    <Title>Instalação do Votu FieldOps</Title>
+    <Publisher>VOTU Robotics</Publisher>
+    <ProductUrl>https://votu.local</ProductUrl>
+    <StartMenuDir>VOTU Robotics</StartMenuDir>
+    <TargetDir>/opt/votu-fieldops</TargetDir>
+    <AdminTargetDir>/opt/votu-fieldops</AdminTargetDir>
+    <InstallerApplicationIcon>installer</InstallerApplicationIcon>
+    <InstallerWindowIcon>logo.png</InstallerWindowIcon>
+    <Logo>logo.png</Logo>
+    <WizardStyle>Modern</WizardStyle>
+    <WizardDefaultWidth>900</WizardDefaultWidth>
+    <WizardDefaultHeight>620</WizardDefaultHeight>
+    <StyleSheet>style.qss</StyleSheet>
+    <MaintenanceToolName>maintenancetool</MaintenanceToolName>
+    <MaintenanceToolIniFile>votu-fieldops.ini</MaintenanceToolIniFile>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+</Installer>
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Votu FieldOps</DisplayName>
+    <Description>Aplicação para operação e transmissão de mapas de campo.</Description>
+    <Version>@VERSION@</Version>
+    <ReleaseDate>2026-07-29</ReleaseDate>
+    <Name>com.votu.fieldops</Name>
+    <Default>true</Default>
+    <Essential>true</Essential>
+    <ForcedInstallation>true</ForcedInstallation>
+    <Licenses>
+        <License name="Licença VOTU Robotics" file="LICENSE.txt"/>
+    </Licenses>
+    <Script>installscript.qs</Script>
+</Package>
+

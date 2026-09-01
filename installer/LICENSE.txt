@@ -1,0 +1,12 @@
+LICENÇA DE USO DO VOTU FIELDOPS
+
+Copyright (c) 2026 VOTU Robotics. Todos os direitos reservados.
+
+Este software e os materiais que o acompanham são propriedade da VOTU
+Robotics. O uso, a cópia, a modificação e a redistribuição dependem de
+autorização expressa da VOTU Robotics.
+
+O software é fornecido para operação autorizada dos equipamentos e processos
+da organização licenciada. Engenharia reversa, sublicenciamento e distribuição
+a terceiros não autorizados são proibidos.
+
